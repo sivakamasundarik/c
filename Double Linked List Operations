@@ -1,0 +1,335 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 4
+struct node
+{
+int id;
+char name[20];
+char dept[10];
+char desig[20];
+int sal;
+char ph[10];
+struct node *left;
+struct node *right; //self referencial pointer
+};
+typedef struct node NODE;
+
+int countnodes(NODE *head)
+{
+int count=0;
+NODE *p;
+p=head;
+while((p)!=NULL)
+{
+  count++;
+  p= p->right; //point to next node until last node
+}
+return count;
+}
+
+NODE *getnode(NODE *head)
+{
+NODE *p; // p is the newnode
+p=(NODE*)malloc(sizeof(NODE));
+printf("\n Enter the ID \n");
+scanf("%d",&p->id);
+printf("\n Enter the name \n");
+scanf("%s",p->name);
+printf("\n Enter the department \n");
+scanf("%s",p->dept);
+printf("\n Enter the designation \n");
+scanf("%s",p->desig);
+printf("\n Enter the salary \n");
+scanf("%d",&p->sal);
+printf("\n Enter the phone number \n");
+scanf("%s",p->ph);
+p->left=NULL;
+p->right=NULL;
+head=p;
+return head;
+}
+
+NODE *create(NODE *head)
+{
+if(countnodes(head)!=MAX)
+{
+NODE *p, *q; // q stores the newnode
+if(head==NULL)
+{
+head=getnode(head);
+}
+else
+{
+p=head;
+while(p->right!=NULL)
+{
+p=p->right; //find last node
+}
+q=getnode(head);
+q->left=p;
+q->right=NULL;
+p->right=q;
+}
+return head;
+}
+else
+{
+printf("Data exceeds the limit! Unable to add to list.");
+return head;
+}
+}
+
+NODE *display(NODE *head)
+{
+if(head==NULL)
+{
+printf("\n No data available! \n");
+return head;
+}
+else
+{
+NODE *p;
+p=head;
+while(p!=NULL)
+{
+printf("\n ID: %d \t NAME: %s \t DEPARTMENT: %s \t DESIGNATION: %s  \t SALARY: %d \t PHONE NUMBER: %s \n",p->id,p->name,p->dept,p->desig,p->sal,p->ph);
+p=p->right;
+}
+}
+printf("\n\nThe number of nodes in list is: %d",countnodes(head));
+return head;
+}
+
+NODE *insert_end( NODE *head)
+{
+if(countnodes(head)==MAX)// when full 
+{
+printf("\n List is FULL! \n");
+return head;
+}
+/* if(head==NULL)
+{
+head=getnode(head);
+head->next=NULL;
+return head;
+}
+else
+{
+NODE *p;
+p=getnode(head);
+p->next=head;
+head=p;
+}
+*/
+else
+{
+head = create(head);
+head=display(head);
+return head;
+}
+}
+
+NODE *insert_front(NODE *head)
+{
+if(countnodes(head)==MAX)// when full 
+{
+printf("\n List is FULL! \n");
+head=display(head);
+return head;
+}
+
+if(head==NULL)
+head=create(head);
+else
+{
+NODE *newFirstNode;
+newFirstNode=getnode(head);
+head->left=newFirstNode;
+newFirstNode->right=head;
+head=newFirstNode;
+}
+head=display(head);
+return head;
+}
+
+NODE *insert(NODE *head)
+{
+int ch;
+printf("\n 1. Insert in the front \t 2. Insert at the end \t 3. Exit \n");
+do
+{
+printf("\n Enter your choice \n");
+scanf("%d",&ch);
+switch(ch)
+{
+case 1: head=insert_front(head);
+break;
+case 2: head=insert_end(head);
+break;
+}
+}while(ch!=3);
+printf("\n \n finally, we have \n\n");
+head=display(head);
+return head;
+}
+
+NODE *delete_front(NODE *head)
+{
+if(head==NULL)
+{
+printf("No data available to perform deletion");
+return head;
+}
+else if(head->right==NULL)// only one node in list
+{
+head=NULL;
+head=display(head);
+return head;
+
+}
+else
+{
+NODE *p;//to hold head
+p=head;
+head = head->right;// thereby deleting head
+head->left=NULL;
+free(p);
+display(head);
+return head;
+}
+}
+
+NODE *delete_end(NODE *head)
+{
+if(head==NULL)
+{
+printf("No data available to perform deletion \n");
+
+return head;
+}
+else if(head->right==NULL) //only one node in list
+{
+head=NULL;
+head=display(head);
+return head;
+}
+else
+{
+NODE *p, *q;
+p=head;
+while(((p->right)->right)!=NULL)
+{
+p=p->right; // to find the last second node
+}
+q=p->right;//q is the last node
+p->right=NULL; //pointing the last second node to NULL thereby deleting the last node q
+free(q);// deleting q or freeing the space occupied by q
+head=display(head);
+return head;
+}
+}
+
+NODE *del(NODE *head)
+{
+int ch;
+printf("\n 1. Delete from front end \t 2. Delete from rear end \t 3. Exit \n");
+do
+{
+printf("\n Enter your choice \n");
+scanf("%d",&ch);
+switch(ch)
+{
+case 1:head=delete_front(head);
+break;
+case 2:head=delete_end(head);
+break;
+}
+}while(ch!=3);
+printf("\n\n finally,  we have \n\n");
+head=display(head);
+return head;
+}
+
+NODE *quu(NODE *head)
+{
+int ch,ch1,ch2;
+printf("\n Implementing Doubly Linked List as Queue \n 1. Insert at rear and delete from front \t 2. Insert in the front and delete from rear \t 3. Exit \n");
+do
+{
+printf("\n Enter your choice \n");
+scanf("%d",&ch);
+switch(ch)
+{
+case 1: 
+printf("\n \n 1. Insert at rear \t 2. Delete from front  \t 3. Exit \n\n");
+do
+{
+printf("\n Enter your choice \n");
+scanf("%d",&ch1);
+switch(ch1)
+{
+case 1: head=insert_end(head);
+break;
+case 2: head = delete_front(head);
+break;
+}
+}while(ch1!=3);
+
+break;
+
+case 2: 
+printf("\n 1. Insert in the front \t 2. Delete from rear \t 3. Exit \n");
+do
+{
+printf("\n Enter your choice \n");
+scanf("%d",&ch2);
+switch(ch2)
+{
+case 1: head=insert_front(head);
+break;
+case 2: head=delete_end(head);
+break;
+}
+}while(ch2!=3);
+break;
+}
+}while(ch!=3);
+head=display(head);
+return head;
+}//end of function
+
+void main()
+{
+int n;
+printf("....DATABASE.....");
+NODE *head = NULL;
+while(1)
+{
+int ch;
+printf("\n\n 1. Create \t 2. Display \t 3. Insert \t 4. Delete \t 5. Double Ended Queue \t 6. Exit \n\n");
+printf("\n Enter your choice \n");
+scanf("%d",&ch);
+switch(ch)
+{
+case 1: 
+printf("\n\n Enter the number of entries \n\n");
+scanf("%d",&n);
+for(int i=0;i<n;i++)
+head=create(head);
+break;
+case 2: head=display(head);
+break;
+case 3: head= insert(head);
+break;
+case 4: head=del(head);
+break;
+case 5: head=quu(head);
+break;
+case 6: exit(0);
+break;
+default:
+printf("\n wrong choice! please enter correct choice b/w 1-7 \n");
+continue;
+}
+}
+}
