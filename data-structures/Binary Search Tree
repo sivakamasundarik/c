@@ -1,0 +1,131 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 10
+int a[MAX],data;
+
+struct tree
+{
+int data;
+struct tree *left;
+struct tree *right; // self-referential pointer
+};
+typedef struct tree NODE;
+
+NODE *create(NODE *node, int d)
+{
+NODE *n; //new node
+n=(NODE*)malloc(sizeof(NODE));
+if(node==NULL)
+{
+n->data=d;
+n->left=NULL;
+n->right=NULL;
+return n;
+}
+else
+{
+if(d<(node->data))
+node->left=create(node->left,d);
+else if(d>(node->data))
+node->right=create(node->right,d);
+}
+return node;
+}
+
+NODE *search(NODE *node, int d)
+{
+if(node==NULL)
+{
+printf("\n \n Element not found \n");
+}
+else
+{
+if(d<(node->data))
+{
+node->left=search(node->left,d);
+}
+else if(d>node->data)
+{
+node->right=search(node->right,d);
+}
+else if(d==node->data)
+{
+printf("\n element found is %d \n",node->data);
+return node;
+}
+}
+}
+
+void inorder(NODE *node)
+{
+if (node!=NULL)
+{
+inorder(node->left);
+printf("%d \n", node->data);
+inorder(node->right);
+}
+}
+
+void preorder(NODE *node)
+{
+if(node!=NULL)
+{
+printf("%d \n", node->data);
+preorder(node->left);
+preorder(node->right);
+}
+}
+
+void postorder(NODE *node)
+{
+if(node!=NULL)
+{
+postorder(node->left);
+postorder(node->right);
+printf("%d \n",node->data);
+}
+}
+
+void main()
+{
+NODE *root = NULL;
+int n,ch,key;
+while(1)
+{
+printf("\n \n 1. Create \t 2. Inorder \t 3. Preorder \t 4. Postorder \t 5. Search 6. Exit \t \n");
+printf("\n Enter your choice \n \n");
+scanf("%d",&ch);
+switch(ch)
+{
+case 1:
+printf("\n \n Enter the number of values: \n");
+scanf("%d",&n);
+printf("\n \n Enter the data \n \n ");
+for(int i=0;i<n;i++)
+{
+scanf("%d \n",&a[i]);
+root=create(root,a[i]);
+}
+break;
+case 2: 
+printf("\n \n inorder traversal \n \n");
+inorder(root);
+break;
+case 3: 
+printf("\n \n preorder traversal \n \n");
+preorder(root);
+break;
+case 4:
+printf("\n \n postorder traversal \n \n");
+ postorder(root);
+break;
+case 5: printf("\n Enter the node to be searched \n");
+scanf("%d \n",&key);
+root=search(root,key);
+break;
+case 6: exit(0);
+break;
+default: printf("wrong choice"); continue;
+}
+}
+}
